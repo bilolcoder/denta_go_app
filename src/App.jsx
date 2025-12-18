@@ -1,19 +1,29 @@
 import React from 'react'
-import Texniklar from './Texniklar/Texniklar.jsx'
 import { Route, Routes } from 'react-router-dom'
-import DetailDoctors from './Texniklar/DetailDoctors.jsx'
-import MalumotBerish from './Texniklar/MalumotBerish.jsx'
+import BottomNavbar from './Sitebar' // Yangi komponent
+
+// Oldingi komponentlar
+import Kategoriyalar from './Qidiruv/Kategoriyalar'
+import KichikKategoriyalar from './Qidiruv/KichikKategoriyalar'
+import Mahsulotlar from './Qidiruv/Mahsulotlar'
+import MahsulotDetallar from './Qidiruv/MahsulotDetallar'
 
 function App() {
   return (
-    <div>
-  <div className='px-[100px] lg:px-10 md:px-6 sm:px-4 max-sm:px-3'>
-      <Routes>
-        <Route path="/texniklar" element={<Texniklar />} />
-        <Route path="/shifokorlar" element={<DetailDoctors />} />
-        <Route path="/malumot" element={<MalumotBerish />} />
-      </Routes>
-  </div>
+    <div className="bg-white min-h-screen">
+      {/* Sahifalar kontenti */}
+      <div className="px-4 lg:px-10 pb-24 pt-4"> {/* pb-24 Navbar to'sib qo'ymasligi uchun */}
+        <Routes>
+          <Route path="/" element={<div>Bosh sahifa (Hali yaratilmagan)</div>} />
+          <Route path="/kategoriyalar" element={<Kategoriyalar />} />
+          <Route path="/kategoriyalar/:categoryKey" element={<KichikKategoriyalar />} />
+          <Route path="/kategoriyalar/:categoryKey/:subKey" element={<Mahsulotlar />} />
+          <Route path="/mahsulot/:categoryKey/:subKey/:productId" element={<MahsulotDetallar />} />
+          <Route path="/savatcha" element={<div>Savatcha sahifasi</div>} />
+          <Route path="/profil" element={<div>Profil sahifasi</div>} />
+        </Routes>
+      </div>
+      <BottomNavbar />
     </div>
   )
 }
