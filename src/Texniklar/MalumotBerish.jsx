@@ -39,6 +39,7 @@ function MalumotBerish() {
   const onSubmit = (data) => {
     console.log("Yuborilgan ma'lumotlar:", data);
 
+
     // 2. React Hook Form inputlarini tozalash
     reset();
 
