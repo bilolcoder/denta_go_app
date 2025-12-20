@@ -17,7 +17,9 @@ const KichikKategoriyalar = () => {
       <div className="space-y-3">
         {category?.subCategories.map((sub) => (
           <div key={sub.id} onClick={() => navigate(`/kategoriyalar/${categoryKey}/${sub.id}`)} className="flex items-center bg-white p-4 rounded-2xl shadow-sm cursor-pointer active:scale-99 transition-all">
-            <div className="text-blue-500 mr-4 border p-2 rounded-xl"><FaThLarge size={20} /></div>
+            <div className="text-blue-500 mr-4 p-2 border border-blue-50 rounded-xl bg-blue-50">
+              <FaThLarge size={22} />
+            </div>
             <span className="flex-1 font-medium text-gray-700">{sub.nomi}</span>
             <FaChevronRight className="text-gray-300" />
           </div>

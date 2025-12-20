@@ -1,30 +1,31 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import BottomNavbar from './Sitebar' // Yangi komponent
-
-// Oldingi komponentlar
+import { CartProvider } from './CartContext'
+import BottomNavbar from './Sitebar'
 import Kategoriyalar from './Qidiruv/Kategoriyalar'
 import KichikKategoriyalar from './Qidiruv/KichikKategoriyalar'
 import Mahsulotlar from './Qidiruv/Mahsulotlar'
 import MahsulotDetallar from './Qidiruv/MahsulotDetallar'
+import Savat from './Savat/Savat'
 
 function App() {
   return (
-    <div className="bg-white min-h-screen">
-      {/* Sahifalar kontenti */}
-      <div className="px-4 lg:px-10 pb-24 pt-4"> {/* pb-24 Navbar to'sib qo'ymasligi uchun */}
-        <Routes>
-          <Route path="/" element={<div>Bosh sahifa (Hali yaratilmagan)</div>} />
-          <Route path="/kategoriyalar" element={<Kategoriyalar />} />
-          <Route path="/kategoriyalar/:categoryKey" element={<KichikKategoriyalar />} />
-          <Route path="/kategoriyalar/:categoryKey/:subKey" element={<Mahsulotlar />} />
-          <Route path="/mahsulot/:categoryKey/:subKey/:productId" element={<MahsulotDetallar />} />
-          <Route path="/savatcha" element={<div>Savatcha sahifasi</div>} />
-          <Route path="/profil" element={<div>Profil sahifasi</div>} />
-        </Routes>
+    <CartProvider>
+      <div className="bg-white min-h-screen">
+        <div className="pb-24 pt-4">
+          <Routes>
+            <Route path="/" element={<Kategoriyalar />} />
+            <Route path="/kategoriyalar" element={<Kategoriyalar />} />
+            <Route path="/kategoriyalar/:categoryKey" element={<KichikKategoriyalar />} />
+            <Route path="/kategoriyalar/:categoryKey/:subKey" element={<Mahsulotlar />} />
+            <Route path="/mahsulot/:categoryKey/:subKey/:productId" element={<MahsulotDetallar />} />
+            <Route path="/savatcha" element={<Savat />} />
+            <Route path="/profil" element={<div className="p-10 text-center">Profil sahifasi</div>} />
+          </Routes>
+        </div>
+        <BottomNavbar />
       </div>
-      <BottomNavbar />
-    </div>
+    </CartProvider>
   )
 }
 

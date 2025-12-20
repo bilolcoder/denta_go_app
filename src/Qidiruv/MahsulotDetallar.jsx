@@ -1,112 +1,143 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { stomatologiyaKatalogi } from './MalumotlarStatik';
-import { FaArrowLeft, FaHeart, FaShareAlt, FaTruck, FaCheckCircle } from 'react-icons/fa';
+import { useCart } from '../CartContext';
+import { FaArrowLeft, FaHeart, FaShareAlt, FaTruck, FaCheckCircle, FaShoppingBag } from 'react-icons/fa';
+
+// Ichki Notification komponenti
+const Notification = ({ message, onClose }) => {
+  useEffect(() => {
+    const timer = setTimeout(onClose, 3000); // 4 soniyadan 3 soniyaga qisqartiramiz
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  return (
+    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-[90%] max-w-sm animate-in fade-in slide-in-from-top-4 duration-300">
+      <div className="bg-white border-l-4 border-green-500 shadow-2xl rounded-2xl p-4 flex items-center gap-4 border border-gray-100">
+        <div className="bg-green-50 p-2 rounded-full">
+          <FaCheckCircle className="text-green-500" size={20} />
+        </div>
+        <div>
+          <h4 className="font-bold text-gray-900 text-sm">Tabriklayman!</h4>
+          <p className="text-xs text-gray-500">{message}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const MahsulotDetallar = () => {
   const { categoryKey, subKey, productId } = useParams();
   const navigate = useNavigate();
+  const { addToCart } = useCart();
+  const [showNotification, setShowNotification] = useState(false);
+  const [isAdding, setIsAdding] = useState(false); // Qo'shish jarayonida ekanligini ko'rsatish
 
-  // Mahsulotni ierarxiya bo'yicha topish
   const product = stomatologiyaKatalogi[categoryKey]?.items[subKey]?.find(i => i.id === parseInt(productId));
 
-  if (!product) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-10 text-center">
-        <h2 className="text-2xl font-bold text-red-500 mb-4">Mahsulot topilmadi!</h2>
-        <button
-          onClick={() => navigate('/kategoriyalar')}
-          className="bg-blue-500 text-white px-6 py-2 rounded-xl"
-        >
-          Katalogga qaytish
-        </button>
-      </div>
-    );
-  }
+  const handleAddToCart = () => {
+    if (isAdding) return; // Agar allaqachon qo'shilayotgan bo'lsa, qayta bosishning oldini olish
+
+    setIsAdding(true);
+
+    // Mahsulotni savatga qo'shish
+    addToCart({
+      ...product,
+      categoryKey,
+      subKey,
+    });
+
+    // Notification ko'rsatish
+    setShowNotification(true);
+
+    // 1.5 soniyadan so'ng savat sahifasiga o'tish
+    setTimeout(() => {
+      navigate('/savatcha');
+    }, 1500);
+  };
+
+  if (!product) return <div className="p-10 text-center text-gray-900 font-bold">Mahsulot topilmadi!</div>;
 
   return (
     <div className="bg-white min-h-screen pb-32">
-      {/* Yuqori Navigatsiya paneli */}
+      {showNotification && (
+        <Notification
+          message="Mahsulot savatchaga muvaffaqiyatli qo'shildi va savat sahifasiga yo'naltirilmoqda..."
+          onClose={() => setShowNotification(false)}
+        />
+      )}
+
+      {/* Navbar */}
       <div className="flex items-center justify-between p-4 sticky top-0 bg-white/80 backdrop-blur-md z-30">
-        <div
-          onClick={() => navigate(-1)}
-          className="p-2 hover:bg-gray-100 rounded-full cursor-pointer transition-colors"
-        >
+        <div onClick={() => navigate(-1)} className="p-2 hover:bg-gray-100 rounded-full cursor-pointer transition-colors">
           <FaArrowLeft size={20} className="text-gray-800" />
         </div>
         <div className="flex gap-4">
-          <div className="p-2 hover:bg-gray-100 rounded-full cursor-pointer">
-            <FaHeart size={22} className="text-gray-400 hover:text-red-500 transition-colors" />
+          <div
+            onClick={() => navigate('/savatcha')}
+            className="p-2 hover:bg-gray-100 rounded-full cursor-pointer relative"
+          >
+            <FaShoppingBag size={22} className="text-gray-700" />
           </div>
-          <div className="p-2 hover:bg-gray-100 rounded-full cursor-pointer">
-            <FaShareAlt size={22} className="text-gray-400 hover:text-blue-500 transition-colors" />
-          </div>
+          <FaHeart size={22} className="text-gray-300 cursor-pointer hover:text-red-500 transition-colors" />
+          <FaShareAlt size={22} className="text-gray-300 cursor-pointer hover:text-blue-500 transition-colors" />
         </div>
       </div>
 
-      {/* Mahsulot Rasmi bo'limi */}
+      {/* Rasm */}
       <div className="w-full h-80 bg-[#F9F9F9] flex items-center justify-center px-6 mb-6">
-        <img
-          src={product.image}
-          alt={product.nomi}
-          className="max-w-full max-h-full bg-red object-contain mix-blend-multiply"
-          onError={(e) => { e.target.src = "https://via.placeholder.com/400x400?text=Rasm+mavjud+emas" }}
-        />
+        <img src={product.image} alt={product.nomi} className="max-w-full max-h-full object-contain" />
       </div>
 
-      {/* Mahsulot ma'lumotlari */}
+      {/* Info */}
       <div className="px-6">
-        <h1 className="text-2xl font-extrabold text-gray-900 mb-2 leading-tight tracking-tight uppercase">
+        <h1 className="text-2xl font-extrabold text-gray-900 mb-2 uppercase leading-tight">
           {product.nomi}
         </h1>
-
-        <p className="text-sm text-gray-400 mb-4">
-          Artikul: <span className="text-[#00C2FF] font-semibold">{product.artikul}</span>
-        </p>
-
+        <p className="text-sm text-gray-400 mb-4">Artikul: <span className="text-[#00C2FF] font-semibold">{product.artikul}</span></p>
         <div className="flex items-baseline gap-2 mb-8">
           <span className="text-3xl font-black text-gray-900">{product.narxi}</span>
           <span className="text-lg font-bold text-gray-900">sum</span>
         </div>
 
-        {/* Yetkazib berish info bo'limi */}
+        {/* Delivery */}
         <div className="flex items-center gap-4 bg-[#F2FBF9] p-4 rounded-[20px] mb-8 border border-green-50">
-          <div className="bg-white p-3 rounded-xl shadow-sm">
-            <FaTruck className="text-[#27AE60]" size={20} />
-          </div>
+          <div className="bg-white p-3 rounded-xl shadow-sm"><FaTruck className="text-[#27AE60]" size={20} /></div>
           <div>
             <p className="font-bold text-gray-900 leading-tight">Dostavka</p>
-            <p className="text-[13px] text-gray-500 font-medium">Standartnaya dostavka ot 1 dney</p>
+            <p className="text-[13px] text-gray-500">Standartnaya dostavka ot 1 dney</p>
           </div>
         </div>
 
-        {/* Tavsif bo'limi */}
-        <div className="mb-6">
-          <h3 className="text-xl font-bold mb-4 text-gray-900">Описание товара</h3>
-          <div className="space-y-4">
-            <div className="flex gap-3 items-start">
-              <FaCheckCircle className="text-green-500 mt-1 flex-shrink-0" />
-              <p className="text-gray-600 font-medium leading-relaxed">
-                {product.tavsif}
-              </p>
-            </div>
-
-            {/* Qo'shimcha statik ma'lumot (dizayn uchun) */}
-            <div className="pl-8 text-gray-500 text-sm space-y-1 font-medium">
-              <p>• Komplektatsiya: Baza — 900 ml</p>
-              <p>• Yuqori sifatli Germaniya texnologiyasi</p>
-              <p>• Stomatologlar tavsiyasi bo'yicha</p>
-            </div>
-          </div>
+        {/* Description */}
+        <h3 className="text-xl font-bold mb-4 text-gray-900">Описание товара</h3>
+        <div className="flex gap-3 items-start mb-6">
+          <FaCheckCircle className="text-green-500 mt-1 flex-shrink-0" />
+          <p className="text-gray-600 font-medium leading-relaxed">{product.tavsif}</p>
         </div>
       </div>
 
-      {/* Pastki qotirilgan tugma (Savatga) */}
-      <div className="fixed bottom-0 left-0 right-0 p-5 bg-white border-t border-gray-100 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] z-40">
+      {/* Fixed Bottom Button */}
+      <div className="fixed bottom-15 left-0 right-0 p-5 bg-white border-t border-gray-100 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] z-40">
         <button
-          className="w-full py-4 bg-[#00C2FF] text-white rounded-[22px] font-bold text-lg shadow-lg shadow-blue-100 active:scale-[0.97] transition-all"
+          onClick={handleAddToCart}
+          disabled={isAdding}
+          className={`w-full py-3.5 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all shadow-lg ${
+            isAdding
+              ? 'bg-green-500 text-white shadow-green-100 animate-pulse'
+              : 'bg-[#0085FF] text-white shadow-blue-100 active:scale-[0.97] hover:bg-blue-600'
+          }`}
         >
-          В корзину
+          {isAdding ? (
+            <>
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+              Qo'shildi...
+            </>
+          ) : (
+            <>
+              <FaShoppingBag size={18} /> Savatga qo'shish
+            </>
+          )}
         </button>
       </div>
     </div>
