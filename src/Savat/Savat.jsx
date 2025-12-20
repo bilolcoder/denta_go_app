@@ -17,12 +17,6 @@ function Savat() {
         </div>
         <h2 className="text-xl font-bold mb-2 text-gray-800">Savatda hali hech narsa yo'q</h2>
         <p className="text-gray-500 text-sm leading-relaxed mb-8">Siz asosiy sahifada mahsulotni qo'shishingiz mumkin</p>
-        <button
-          onClick={() => navigate('/')}
-          className="py-3 px-6 bg-[#00C2FF] text-white rounded-[22px] font-bold active:scale-95 transition-all"
-        >
-          Bosh sahifaga qaytish
-        </button>
       </div>
     );
   }
@@ -31,7 +25,7 @@ function Savat() {
     <div className="bg-white min-h-screen pb-48 p-4">
       <h1 className="text-center text-xl font-bold mb-6 text-gray-800">Korzinka</h1>
 
-      <div className="space-y-4">
+      <div className="space-y-1">
         {cartItems.map((item) => (
           <div key={item.id} className="bg-white p-4 rounded-[24px] shadow-sm flex items-center relative">
             <button
@@ -68,7 +62,7 @@ function Savat() {
               </p>
 
               <div className="flex items-center justify-between">
-                <span className="font-black text-[17px] text-gray-900">
+                <span className="font-black text-[17px] max-sm:text-[14px] text-gray-900">
                   {(item.narxi * item.quantity).toLocaleString()} so'm
                 </span>
 
@@ -79,7 +73,7 @@ function Savat() {
                   >
                     <FaMinus size={10} />
                   </button>
-                  <span className="font-bold text-sm min-w-[12px] text-center">{item.quantity}</span>
+                  <span className="font-bold text-sm min-w-3 text-center">{item.quantity}</span>
                   <button
                     onClick={() => updateQuantity(item.id, 1)}
                     className="text-blue-500 active:scale-90 hover:bg-blue-50 rounded-full p-1"
@@ -103,7 +97,7 @@ function Savat() {
             <span>Yetkazib berish</span>
             <span className="text-green-500 font-bold">Bepul</span>
           </div>
-          <div className="flex justify-between items-center pt-2 border-t mt-2">
+          <div className="flex justify-between items-center pt-2 border-t border-gray-200 mt-2">
             <span className="font-bold text-lg text-black">Jami</span>
             <span className="font-black text-2xl text-black">{jamiSumma.toLocaleString()} so'm</span>
           </div>
@@ -112,11 +106,7 @@ function Savat() {
           </p>
         </div>
         <button
-          className="w-full py-4 bg-[#00C2FF] text-white rounded-[22px] font-bold text-lg shadow-lg active:scale-95 transition-all hover:bg-[#0099DD]"
-          onClick={() => {
-            // Bu yerda to'lov jarayonini boshlashingiz mumkin
-            alert(`To'lov summasi: ${jamiSumma.toLocaleString()} so'm`);
-          }}
+          className="w-full py-4 max-sm:py-3 max-sm:w-[70%] m-auto block bg-[#00C2FF] text-white rounded-[22px] font-bold text-lg shadow-lg active:scale-95 transition-all hover:bg-[#0099DD]"
         >
           Sotib olish
         </button>

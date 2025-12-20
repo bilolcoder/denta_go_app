@@ -15,7 +15,7 @@ function App() {
     // 2. Hammasini CartProvider bilan o'rab chiqing
     <CartProvider>
       <div className="bg-white min-h-screen">
-        <div className="px-4 lg:px-10 pb-24 pt-4">
+        <div className="px-1 lg:px-10 pb-24 pt-4">
           <Routes>
             <Route path="/" element={<div>Bosh sahifa (Hali yaratilmagan)</div>} />
             <Route path="/kategoriyalar" element={<Kategoriyalar />} />
